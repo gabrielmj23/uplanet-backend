@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1702765594415,
+      "tag": "0000_omniscient_vision",
+      "breakpoints": true
+    }
+  ]
+}
