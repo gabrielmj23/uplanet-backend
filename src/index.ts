@@ -11,12 +11,14 @@ app.use(cors());
 import { adminsRouter } from "./routes/admins";
 import { authRouter } from "./routes/auth";
 import { statsRouter } from "./routes/estadisticas";
+import { preguntasRouter } from "./routes/preguntas";
 
 // Rutas
 app.get("/api", (_req, res) => res.send("Hola mundo"));
 app.use("/api/auth", authRouter);
 app.use("/api/admins", adminsRouter);
 app.use("/api/estadisticas", statsRouter);
+app.use("/api/preguntas", preguntasRouter);
 
 // Iniciar
 const PORT = Number(process.env.PORT) || 3000;
