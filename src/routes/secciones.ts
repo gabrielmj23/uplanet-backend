@@ -38,7 +38,7 @@ seccionesRouter.post("/", async (req, res) => {
         nombre: secciones.nombre,
       });
     // Responder
-    res.status(200);
+    res.json({ seccion });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error });
