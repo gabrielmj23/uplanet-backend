@@ -10,11 +10,13 @@ app.use(cors());
 // Importar routers
 import { adminsRouter } from "./routes/admins";
 import { authRouter } from "./routes/auth";
+import { statsRouter } from "./routes/estadisticas";
 
 // Rutas
 app.get("/api", (_req, res) => res.send("Hola mundo"));
 app.use("/api/auth", authRouter);
 app.use("/api/admins", adminsRouter);
+app.use("/api/estadisticas", statsRouter);
 
 // Iniciar
 const PORT = Number(process.env.PORT) || 3000;
