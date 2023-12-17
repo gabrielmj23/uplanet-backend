@@ -68,7 +68,7 @@ preguntasRouter.get("/", async (_req, res) => {
       seccion,
       preguntas,
     }));
-    res.json(ans);
+    res.json({ preguntas: ans });
   } catch (error) {
     res.status(500).json({ error });
   }
