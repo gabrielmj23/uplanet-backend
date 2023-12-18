@@ -39,16 +39,16 @@ preguntasRouter.get("/", async (_req, res) => {
 preguntasRouter.post("/", async (req, res) => {
   try {
     // Validar pregunta
-    const { respuestas, nombreSeccion, ...preguntaParsed } = preguntaSchema.parse(req.body);
+    const { respuestas, nombreSeccion, tipo, ...preguntaParsed } = preguntaSchema.parse(req.body);
     // Buscar tipo de pregunta
-    const tipo = await db
+    const tipoDB = await db
       .select({ id: tiposPregunta.id })
       .from(tiposPregunta)
-      .where(eq(tiposPregunta.tipo, preguntaParsed.tipo));
+      .where(eq(tiposPregunta.tipo, tipo));
     if (!tipo) {
       return res.status(400).json({ error: "Tipo de pregunta inválido" });
     }
-    const tipoId = tipo[0].id;
+    const tipoId = tipoDB[0].id;
     // Buscar id de sección
     const seccion = await db
       .select({ id: secciones.id })
