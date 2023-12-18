@@ -39,7 +39,7 @@ preguntasRouter.get("/", async (_req, res) => {
 preguntasRouter.post("/", async (req, res) => {
   try {
     // Validar pregunta
-    const preguntaParsed = preguntaSchema.parse(req.body);
+    const { respuestas, nombreSeccion, ...preguntaParsed } = preguntaSchema.parse(req.body);
     // Buscar tipo de pregunta
     const tipo = await db
       .select({ id: tiposPregunta.id })
@@ -53,29 +53,16 @@ preguntasRouter.post("/", async (req, res) => {
     const seccion = await db
       .select({ id: secciones.id })
       .from(secciones)
-      .where(eq(secciones.nombre, preguntaParsed.nombreSeccion));
+      .where(eq(secciones.nombre, nombreSeccion));
     if (!seccion) {
       return res.status(400).json({ error: "Sección inválida" });
     }
     const seccionId = seccion[0].id;
-    await db.transaction(async (tx) => {
-      // Crear pregunta
-      const nuevaPregunta = await tx
-        .insert(preguntas)
-        .values({
-          idSeccion: seccionId,
-          pregunta: preguntaParsed.pregunta,
-          orden: preguntaParsed.orden,
-          idTipo: tipoId,
-        })
-        .returning({ idPregunta: preguntas.id });
-      // Crear respuestas
-      await tx.insert(respuestas).values(
-        preguntaParsed.respuestas.map((r) => ({
-          idPregunta: nuevaPregunta[0].idPregunta,
-          ...r,
-        }))
-      );
+    // Crear pregunta
+    await db.insert(preguntas).values({
+      idSeccion: seccionId,
+      idTipo: tipoId,
+      ...preguntaParsed,
     });
     // Responder
     res.status(200);
