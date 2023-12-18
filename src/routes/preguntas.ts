@@ -11,64 +11,22 @@ import { preguntaSchema } from "../schemas/pregunta";
 
 export const preguntasRouter = Router();
 
-type PreguntaType = {
-  id: number;
-  pregunta: string;
-  tipo: string;
-  respuestas: {
-    id: number;
-    respuesta: string;
-    puntaje: number;
-  }[];
-};
-
 /**
  * GET /api/preguntas
  * Devuelve todas las preguntas
  */
 preguntasRouter.get("/", async (_req, res) => {
   try {
-    // Buscar secciones, preguntas y respuestas
-    const rows = await db
-      .select()
-      .from(secciones)
-      .leftJoin(preguntas, eq(secciones.id, preguntas.idSeccion))
-      .leftJoin(tiposPregunta, eq(preguntas.idTipo, tiposPregunta.id))
-      .leftJoin(respuestas, eq(preguntas.id, respuestas.idPregunta));
-    // Acomodar
-    const preg = rows.reduce<Record<string, PreguntaType[]>>((acc, row) => {
-      const { secciones, preguntas, respuestas, tiposPregunta } = row;
-      // Agregar sección si no existe
-      if (!acc[secciones.nombre]) {
-        acc[secciones.nombre] = [];
-      }
-      // Agregar pregunta si no existe
-      if (!acc[secciones.nombre].find((p) => p.id === preguntas?.id)) {
-        acc[secciones.nombre].push({
-          id: preguntas?.id!,
-          pregunta: preguntas?.pregunta!,
-          tipo: tiposPregunta?.tipo!,
-          respuestas: [],
-        });
-        // Agregar respuesta
-        for (const p of acc[secciones.nombre]) {
-          if (p.id === preguntas?.id) {
-            p.respuestas.push({
-              id: respuestas?.id!,
-              respuesta: respuestas?.respuesta!,
-              puntaje: respuestas?.puntaje!,
-            });
-          }
-        }
-      }
-      return acc;
-    }, {});
-    // Convertir a array
-    const ans = Object.entries(preg).map(([seccion, preguntas]) => ({
-      seccion,
-      preguntas,
-    }));
-    res.json({ preguntas: ans });
+    const results = await db.query.secciones.findMany({
+      with: {
+        preguntas: {
+          with: {
+            respuestas: true,
+          },
+        },
+      },
+    });
+    res.json({ preguntas: results });
   } catch (error) {
     res.status(500).json({ error });
   }
