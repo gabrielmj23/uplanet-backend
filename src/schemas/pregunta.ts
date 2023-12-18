@@ -14,3 +14,9 @@ export const preguntaSchema = z.object({
     })
   ),
 });
+
+export const respuestaSchema = z.object({
+  respuesta: z.string().trim().min(1).max(256),
+  orden: z.number().int(),
+  puntaje: z.number().positive(),
+});
