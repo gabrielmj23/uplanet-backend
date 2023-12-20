@@ -2,6 +2,7 @@ import { Router } from "express";
 import { db } from "../../db/db";
 import { secciones } from "../../db/schema";
 import { seccionSchema } from "../schemas/seccion";
+import { authProtected } from "../utils";
 
 export const seccionesRouter = Router();
 
@@ -25,7 +26,7 @@ seccionesRouter.get("/", async (_req, res) => {
  * POST /api/secciones
  * Crear una seccion
  */
-seccionesRouter.post("/", async (req, res) => {
+seccionesRouter.post("/", authProtected, async (req, res) => {
   try {
     // Validar sección
     const seccionParsed = seccionSchema.parse(req.body);

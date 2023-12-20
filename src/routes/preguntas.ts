@@ -8,6 +8,7 @@ import {
 } from "../../db/schema";
 import { eq } from "drizzle-orm";
 import { preguntaSchema, respuestaSchema } from "../schemas/pregunta";
+import { authProtected } from "../utils";
 
 export const preguntasRouter = Router();
 
@@ -36,7 +37,7 @@ preguntasRouter.get("/", async (_req, res) => {
  * POST /api/preguntas
  * Crea una nueva pregunta
  */
-preguntasRouter.post("/", async (req, res) => {
+preguntasRouter.post("/", authProtected, async (req, res) => {
   try {
     // Validar pregunta
     const { respuestas, nombreSeccion, tipo, ...preguntaParsed } = preguntaSchema.parse(req.body);
@@ -75,7 +76,7 @@ preguntasRouter.post("/", async (req, res) => {
  * POST /api/preguntas/:id/respuestas
  * Crea una nueva respuesta para la pregunta con id :id
  */
-preguntasRouter.post("/:id/respuestas", async (req, res) => {
+preguntasRouter.post("/:id/respuestas", authProtected, async (req, res) => {
   try {
     // Validar respuesta
     const preguntaId = parseInt(req.params.id);
