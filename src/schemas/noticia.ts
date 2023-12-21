@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const noticiaSchema = z.object({
-  idAutor: z.number().int().positive(),
+  idAutor: z.coerce.number().int().positive(),
   titulo: z
     .string()
     .trim()

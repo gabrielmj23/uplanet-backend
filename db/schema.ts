@@ -49,6 +49,7 @@ export const noticias = pgTable(
     contenido: varchar("contenido", { length: 2048 }).notNull(),
     fecha: date("fecha").defaultNow().notNull(),
     ultimaEdicion: date("ultimaEdicion").defaultNow().notNull(),
+    urlImagen: varchar("urlImagen", { length: 2048 }).notNull(),
   },
   (noticias) => ({
     tituloIndex: uniqueIndex("tituloIndex").on(noticias.titulo),
