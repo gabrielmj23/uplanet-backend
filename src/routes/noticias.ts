@@ -4,6 +4,7 @@ import { noticiaSchema } from "../schemas/noticia";
 import { noticias } from "../../db/schema";
 import { and, desc, eq } from "drizzle-orm";
 import { authProtected } from "../utils";
+import path from "path";
 import multer from "multer";
 
 export const noticiasRouter = Router();
@@ -35,6 +36,28 @@ noticiasRouter.get("/", async (_req, res) => {
       limit: 40,
     });
     res.json({ noticias: notis });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error });
+  }
+});
+
+/**
+ * GET /api/noticias/:id/imagen
+ * Devuelve la imagen de una noticia
+ */
+noticiasRouter.get("/:id/imagen", async (req, res) => {
+  try {
+    // Obtener url de imagen de BD
+    const imagen = await db
+      .select({ urlImagen: noticias.urlImagen })
+      .from(noticias)
+      .where(eq(noticias.id, Number(req.params.id)));
+    if (!imagen || imagen.length === 0) {
+      return res.status(404).json({ error: "No se encontró la imagen" });
+    }
+    // Devolver imagen
+    res.sendFile(path.join(__dirname, "../../", imagen[0].urlImagen));
   } catch (error) {
     console.error(error);
     res.status(500).json({ error });
