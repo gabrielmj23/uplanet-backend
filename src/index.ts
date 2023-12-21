@@ -13,6 +13,7 @@ import { authRouter } from "./routes/auth";
 import { statsRouter } from "./routes/estadisticas";
 import { preguntasRouter } from "./routes/preguntas";
 import { seccionesRouter } from "./routes/secciones";
+import { noticiasRouter } from "./routes/noticias";
 
 // Rutas
 app.get("/api", (_req, res) => res.send("Hola mundo"));
@@ -21,6 +22,7 @@ app.use("/api/admins", adminsRouter);
 app.use("/api/estadisticas", statsRouter);
 app.use("/api/preguntas", preguntasRouter);
 app.use("/api/secciones", seccionesRouter);
+app.use("/api/noticias", noticiasRouter);
 
 // Iniciar
 const PORT = Number(process.env.PORT) || 3000;
