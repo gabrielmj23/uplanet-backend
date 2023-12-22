@@ -1,0 +1,1 @@
+ALTER TABLE "noticias" ADD COLUMN "resumen" varchar(256) NOT NULL;

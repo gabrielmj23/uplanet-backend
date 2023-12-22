@@ -5,6 +5,7 @@ import {
   pgEnum,
   pgTable,
   serial,
+  text,
   uniqueIndex,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -46,7 +47,8 @@ export const noticias = pgTable(
       .references(() => admins.id)
       .notNull(),
     titulo: varchar("titulo", { length: 256 }).notNull(),
-    contenido: varchar("contenido", { length: 2048 }).notNull(),
+    resumen: varchar("resumen", { length: 256 }).notNull(),
+    contenido: text("contenido").notNull(),
     fecha: date("fecha").defaultNow().notNull(),
     ultimaEdicion: date("ultimaEdicion").defaultNow().notNull(),
     urlImagen: varchar("urlImagen", { length: 2048 }).notNull(),

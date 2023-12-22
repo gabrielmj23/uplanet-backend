@@ -7,11 +7,12 @@ export const noticiaSchema = z.object({
     .trim()
     .min(1)
     .max(256, { message: "El título debe tener menos de 256 caracteres" }),
-  contenido: z
+  resumen: z
     .string()
     .trim()
     .min(1)
-    .max(2048, { message: "El contenido debe tener menos de 2048 caracteres" }),
+    .max(256, { message: "El resumen debe tener menos de 256 caracteres" }),
+  contenido: z.string().trim().min(1),
 });
 
 export const actualizarNoticiaSchema = z.object({
@@ -21,10 +22,10 @@ export const actualizarNoticiaSchema = z.object({
     .min(1)
     .max(256, { message: "El título debe tener menos de 256 caracteres" })
     .optional(),
-  contenido: z
+  resumen: z
     .string()
     .trim()
     .min(1)
-    .max(2048, { message: "El contenido debe tener menos de 2048 caracteres" })
-    .optional(),
+    .max(256, { message: "El resumen debe tener menos de 256 caracteres" }),
+  contenido: z.string().trim().min(1),
 });
