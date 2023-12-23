@@ -47,7 +47,7 @@ export const noticias = pgTable(
       .references(() => admins.id)
       .notNull(),
     titulo: varchar("titulo", { length: 256 }).notNull(),
-    resumen: varchar("resumen", { length: 256 }).notNull(),
+    resumen: varchar("resumen", { length: 256 }).notNull().default("Resumen"),
     contenido: text("contenido").notNull(),
     fecha: date("fecha").defaultNow().notNull(),
     ultimaEdicion: date("ultimaEdicion").defaultNow().notNull(),
