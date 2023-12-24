@@ -47,14 +47,16 @@ noticiasRouter.get("/", async (_req, res) => {
  */
 noticiasRouter.get("/:id", async (req, res) => {
   try {
-    const noticia = await db
-      .select()
-      .from(noticias)
-      .where(eq(noticias.id, Number(req.params.id)));
-    if (!noticia || noticia.length === 0) {
+    const noticia = await db.query.noticias.findFirst({
+      where: eq(noticias.id, Number(req.params.id)),
+      with: {
+        autor: true,
+      },
+    });
+    if (!noticia) {
       res.status(404).json({ error: "Noticia no encontrada" });
     }
-    res.json({ noticia: noticia[0] });
+    res.json({ noticia });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error });
