@@ -50,7 +50,7 @@ noticiasRouter.get("/:id", async (req, res) => {
     const noticia = await db
       .select()
       .from(noticias)
-      .where(eq(noticias.id, Number(req.body.id)));
+      .where(eq(noticias.id, Number(req.params.id)));
     if (!noticia || noticia.length === 0) {
       res.status(404).json({ error: "Noticia no encontrada" });
     }
