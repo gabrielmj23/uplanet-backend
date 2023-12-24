@@ -7,7 +7,14 @@ import "dotenv/config";
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use('/public', express.static(path.join(__dirname, "../public")));
+console.log(__dirname);
+if (__dirname.endsWith("build/src") || __dirname.endsWith("build\\src")) {
+  // PROD
+  app.use("/public", express.static(path.join(__dirname, "../../public")));
+} else {
+  // DEV
+  app.use("/public", express.static(path.join(__dirname, "../public")));
+}
 
 // Importar routers
 import { adminsRouter } from "./routes/admins";
