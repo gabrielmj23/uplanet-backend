@@ -22,17 +22,17 @@ const upload = multer({
 });
 
 /**
- * GET /api/noticias
+ * GET /api/noticias?cantidad=<cantidad>
  * Devuelve todas las noticias
  */
-noticiasRouter.get("/", async (_req, res) => {
+noticiasRouter.get("/", async (req, res) => {
   try {
     const notis = await db.query.noticias.findMany({
       with: {
         autor: { columns: { nombre: true, id: true } },
       },
       orderBy: [desc(noticias.fecha)],
-      limit: 40,
+      limit: req.query.cantidad ? Number(req.query.cantidad) : 40,
     });
     res.json({ noticias: notis });
   } catch (error) {
