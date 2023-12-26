@@ -1,6 +1,11 @@
 import { Router } from "express";
 import { db } from "../../db/db";
-import { preguntas, respuestas, secciones } from "../../db/schema";
+import {
+  dependencias,
+  preguntas,
+  respuestas,
+  secciones,
+} from "../../db/schema";
 import { desc, eq } from "drizzle-orm";
 import { preguntaSchema, respuestaSchema } from "../schemas/pregunta";
 import { authProtected } from "../utils";
@@ -18,6 +23,7 @@ preguntasRouter.get("/", async (_req, res) => {
         preguntas: {
           with: {
             respuestas: true,
+            dependencias: true,
           },
           orderBy: [desc(preguntas.orden)],
         },
@@ -36,7 +42,9 @@ preguntasRouter.get("/", async (_req, res) => {
 preguntasRouter.post("/", authProtected, async (req, res) => {
   try {
     // Validar pregunta
-    const preguntaParsed = preguntaSchema.parse(req.body);
+    const { dependencias: deps, ...preguntaParsed } = preguntaSchema.parse(
+      req.body
+    );
     // Buscar id de sección
     const seccion = await db
       .select({ id: secciones.id })
@@ -45,9 +53,18 @@ preguntasRouter.post("/", authProtected, async (req, res) => {
     if (!seccion) {
       return res.status(400).json({ error: "Sección inválida" });
     }
-    // Crear pregunta
-    await db.insert(preguntas).values({
-      ...preguntaParsed,
+    // Crear pregunta con y registrar sus dependencias
+    await db.transaction(async (tx) => {
+      const [{ idInsertada }] = await tx
+        .insert(preguntas)
+        .values({ ...preguntaParsed })
+        .returning({ idInsertada: preguntas.id });
+      for (const dependencia of deps) {
+        await tx.insert(dependencias).values({
+          idDependiente: idInsertada,
+          ...dependencia,
+        });
+      }
     });
     // Responder
     res.status(200);
