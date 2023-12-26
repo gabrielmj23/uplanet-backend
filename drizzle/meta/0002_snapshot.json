@@ -1,0 +1,460 @@
+{
+  "id": "5147d961-0fe5-4522-a6b6-88746ee72057",
+  "prevId": "e40cb835-05cd-46d9-bcfb-abeb05f938ed",
+  "version": "5",
+  "dialect": "pg",
+  "tables": {
+    "admins": {
+      "name": "admins",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "correo": {
+          "name": "correo",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "nombreIndex": {
+          "name": "nombreIndex",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "dependencias": {
+      "name": "dependencias",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "idDependiente": {
+          "name": "idDependiente",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "idDependencia": {
+          "name": "idDependencia",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "idRespuesta": {
+          "name": "idRespuesta",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "dependencias_idDependiente_preguntas_id_fk": {
+          "name": "dependencias_idDependiente_preguntas_id_fk",
+          "tableFrom": "dependencias",
+          "tableTo": "preguntas",
+          "columnsFrom": [
+            "idDependiente"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "dependencias_idDependencia_preguntas_id_fk": {
+          "name": "dependencias_idDependencia_preguntas_id_fk",
+          "tableFrom": "dependencias",
+          "tableTo": "preguntas",
+          "columnsFrom": [
+            "idDependencia"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "dependencias_idRespuesta_respuestas_id_fk": {
+          "name": "dependencias_idRespuesta_respuestas_id_fk",
+          "tableFrom": "dependencias",
+          "tableTo": "respuestas",
+          "columnsFrom": [
+            "idRespuesta"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "noticias": {
+      "name": "noticias",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "idAutor": {
+          "name": "idAutor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "titulo": {
+          "name": "titulo",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "resumen": {
+          "name": "resumen",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'Resumen'"
+        },
+        "contenido": {
+          "name": "contenido",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fecha": {
+          "name": "fecha",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "ultimaEdicion": {
+          "name": "ultimaEdicion",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "urlImagen": {
+          "name": "urlImagen",
+          "type": "varchar(2048)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "tituloIndex": {
+          "name": "tituloIndex",
+          "columns": [
+            "titulo"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "noticias_idAutor_admins_id_fk": {
+          "name": "noticias_idAutor_admins_id_fk",
+          "tableFrom": "noticias",
+          "tableTo": "admins",
+          "columnsFrom": [
+            "idAutor"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "preguntas": {
+      "name": "preguntas",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "idSeccion": {
+          "name": "idSeccion",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "tipoPregunta",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pregunta": {
+          "name": "pregunta",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "orden": {
+          "name": "orden",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "preguntas_idSeccion_secciones_id_fk": {
+          "name": "preguntas_idSeccion_secciones_id_fk",
+          "tableFrom": "preguntas",
+          "tableTo": "secciones",
+          "columnsFrom": [
+            "idSeccion"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "recomendaciones": {
+      "name": "recomendaciones",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "idRespuesta": {
+          "name": "idRespuesta",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recomendacion": {
+          "name": "recomendacion",
+          "type": "varchar(512)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "urlImagen": {
+          "name": "urlImagen",
+          "type": "varchar(2048)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "recomendaciones_idRespuesta_respuestas_id_fk": {
+          "name": "recomendaciones_idRespuesta_respuestas_id_fk",
+          "tableFrom": "recomendaciones",
+          "tableTo": "respuestas",
+          "columnsFrom": [
+            "idRespuesta"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "respuestas": {
+      "name": "respuestas",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "idPregunta": {
+          "name": "idPregunta",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "respuesta": {
+          "name": "respuesta",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "puntaje": {
+          "name": "puntaje",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "respuestas_idPregunta_preguntas_id_fk": {
+          "name": "respuestas_idPregunta_preguntas_id_fk",
+          "tableFrom": "respuestas",
+          "tableTo": "preguntas",
+          "columnsFrom": [
+            "idPregunta"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "resultados": {
+      "name": "resultados",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "idRespuesta": {
+          "name": "idRespuesta",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tipoUsuario": {
+          "name": "tipoUsuario",
+          "type": "tipoUsuario",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "resultados_idRespuesta_respuestas_id_fk": {
+          "name": "resultados_idRespuesta_respuestas_id_fk",
+          "tableFrom": "resultados",
+          "tableTo": "respuestas",
+          "columnsFrom": [
+            "idRespuesta"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "secciones": {
+      "name": "secciones",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "urlImagen": {
+          "name": "urlImagen",
+          "type": "varchar(2048)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "nombreIndex": {
+          "name": "nombreIndex",
+          "columns": [
+            "nombre"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {
+    "tipoPregunta": {
+      "name": "tipoPregunta",
+      "values": {
+        "simple": "simple",
+        "multiple": "multiple"
+      }
+    },
+    "tipoUsuario": {
+      "name": "tipoUsuario",
+      "values": {
+        "estudiante": "estudiante",
+        "docente": "docente",
+        "personal_administrativo": "personal_administrativo",
+        "foraneo": "foraneo",
+        "personal_tecnico": "personal_tecnico"
+      }
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

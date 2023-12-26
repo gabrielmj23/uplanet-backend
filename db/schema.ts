@@ -117,6 +117,7 @@ export const respuestasRelations = relations(respuestas, ({ one, many }) => ({
   }),
   dependencias: many(dependencias),
   resultados: many(resultados),
+  recomendaciones: many(recomendaciones),
 }));
 export type Respuesta = typeof respuestas.$inferSelect;
 
@@ -160,3 +161,23 @@ export const resultadosRelations = relations(resultados, ({ one }) => ({
   }),
 }));
 export type Resultado = typeof resultados.$inferSelect;
+
+// Tabla de recomendaciones
+export const recomendaciones = pgTable("recomendaciones", {
+  id: serial("id").primaryKey(),
+  idRespuesta: integer("idRespuesta")
+    .references(() => respuestas.id)
+    .notNull(),
+  recomendacion: varchar("recomendacion", { length: 512 }).notNull(),
+  urlImagen: varchar("urlImagen", { length: 2048 }).notNull(),
+});
+export const recomendacionesRelations = relations(
+  recomendaciones,
+  ({ one }) => ({
+    respuesta: one(respuestas, {
+      fields: [recomendaciones.idRespuesta],
+      references: [respuestas.id],
+    }),
+  })
+);
+export type Recomendacion = typeof recomendaciones.$inferSelect;
