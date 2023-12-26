@@ -5,57 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1702765594415,
-      "tag": "0000_omniscient_vision",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1702810053499,
-      "tag": "0001_kind_layla_miller",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1703171431398,
-      "tag": "0002_same_maria_hill",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1703286584962,
-      "tag": "0003_youthful_jack_murdock",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1703286640747,
-      "tag": "0004_chemical_lyja",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1703290367869,
-      "tag": "0005_secret_wendell_rand",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1703290508832,
-      "tag": "0006_gray_miek",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "5",
-      "when": 1703290801782,
-      "tag": "0007_blushing_maggott",
+      "when": 1703560403843,
+      "tag": "0000_loving_triathlon",
       "breakpoints": true
     }
   ]

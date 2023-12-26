@@ -1,1 +1,0 @@
-ALTER TABLE "noticias" ALTER COLUMN "contenido" SET DATA TYPE text;

@@ -19,6 +19,9 @@ export const tipoUsuarioEnum = pgEnum("tipoUsuario", [
   "personal_tecnico",
 ]);
 
+// Tipos de preguntas
+export const tipoPreguntaEnum = pgEnum("tipoPregunta", ["simple", "multiple"]);
+
 // Tabla de administradores
 export const admins = pgTable(
   "admins",
@@ -36,7 +39,6 @@ export const adminsRelations = relations(admins, ({ many }) => ({
   noticias: many(noticias),
 }));
 export type Admin = typeof admins.$inferSelect;
-export type NuevoAdmin = typeof admins.$inferInsert;
 
 // Tabla de noticias
 export const noticias = pgTable(
@@ -61,7 +63,6 @@ export const noticiasRelations = relations(noticias, ({ one }) => ({
   autor: one(admins, { fields: [noticias.idAutor], references: [admins.id] }),
 }));
 export type Noticia = typeof noticias.$inferSelect;
-export type NuevaNoticia = typeof noticias.$inferInsert;
 
 // Tabla de secciones
 export const secciones = pgTable(
@@ -69,6 +70,7 @@ export const secciones = pgTable(
   {
     id: serial("id").primaryKey(),
     nombre: varchar("nombre", { length: 256 }).notNull(),
+    urlImagen: varchar("urlImagen", { length: 2048 }).notNull(),
   },
   (secciones) => ({
     nombreIndex: uniqueIndex("nombreIndex").on(secciones.nombre),
@@ -78,24 +80,6 @@ export const seccionesRelations = relations(secciones, ({ many }) => ({
   preguntas: many(preguntas),
 }));
 export type Seccion = typeof secciones.$inferSelect;
-export type NuevaSeccion = typeof secciones.$inferInsert;
-
-// Tabla de tipos de pregunta
-export const tiposPregunta = pgTable(
-  "tiposPregunta",
-  {
-    id: serial("id").primaryKey(),
-    tipo: varchar("tipo", { length: 256 }).notNull(),
-  },
-  (tiposRespuesta) => ({
-    tipoIndex: uniqueIndex("tipoIndex").on(tiposRespuesta.tipo),
-  })
-);
-export const tiposPreguntaRelations = relations(tiposPregunta, ({ many }) => ({
-  preguntas: many(preguntas),
-}));
-export type TipoPregunta = typeof tiposPregunta.$inferSelect;
-export type NuevoTipoPregunta = typeof tiposPregunta.$inferInsert;
 
 // Tabla de preguntas
 export const preguntas = pgTable("preguntas", {
@@ -103,26 +87,19 @@ export const preguntas = pgTable("preguntas", {
   idSeccion: integer("idSeccion")
     .references(() => secciones.id)
     .notNull(),
+  tipo: tipoPreguntaEnum("tipo").notNull(),
   pregunta: varchar("pregunta", { length: 256 }).notNull(),
   orden: integer("orden").notNull(),
-  idTipo: integer("idTipo")
-    .references(() => tiposPregunta.id)
-    .notNull(),
 });
 export const preguntasRelations = relations(preguntas, ({ one, many }) => ({
   seccion: one(secciones, {
     fields: [preguntas.idSeccion],
     references: [secciones.id],
   }),
-  tipo: one(tiposPregunta, {
-    fields: [preguntas.idTipo],
-    references: [tiposPregunta.id],
-  }),
   respuestas: many(respuestas),
-  predecesoresPregunta: many(predecesoresPregunta),
+  dependencias: many(dependencias),
 }));
 export type Pregunta = typeof preguntas.$inferSelect;
-export type NuevaPregunta = typeof preguntas.$inferInsert;
 
 // Tabla de respuestas
 export const respuestas = pgTable("respuestas", {
@@ -139,37 +116,35 @@ export const respuestasRelations = relations(respuestas, ({ one, many }) => ({
     fields: [respuestas.idPregunta],
     references: [preguntas.id],
   }),
-  predecesoresPregunta: many(predecesoresPregunta),
+  dependencias: many(dependencias),
   resultados: many(resultados),
 }));
 export type Respuesta = typeof respuestas.$inferSelect;
-export type NuevaRespuesta = typeof respuestas.$inferInsert;
 
-// Tabla de predecesores
-export const predecesoresPregunta = pgTable("predecesoresPregunta", {
+// Tabla de dependencias de preguntas
+export const dependencias = pgTable("dependencias", {
   id: serial("id").primaryKey(),
-  idPregunta: integer("idPregunta")
+  idDependiente: integer("idDependiente")
+    .references(() => preguntas.id)
+    .notNull(),
+  idDependencia: integer("idDependencia")
     .references(() => preguntas.id)
     .notNull(),
   idRespuesta: integer("idRespuesta")
     .references(() => respuestas.id)
     .notNull(),
 });
-export const predecesoresPreguntaRelations = relations(
-  predecesoresPregunta,
-  ({ one }) => ({
-    pregunta: one(preguntas, {
-      fields: [predecesoresPregunta.idPregunta],
-      references: [preguntas.id],
-    }),
-    respuesta: one(respuestas, {
-      fields: [predecesoresPregunta.idRespuesta],
-      references: [respuestas.id],
-    }),
-  })
-);
-export type PredecesorPregunta = typeof predecesoresPregunta.$inferSelect;
-export type NuevoPredecesorPregunta = typeof predecesoresPregunta.$inferInsert;
+export const dependenciasRelations = relations(dependencias, ({ one }) => ({
+  dependencia: one(preguntas, {
+    fields: [dependencias.idDependiente],
+    references: [preguntas.id],
+  }),
+  respuesta: one(respuestas, {
+    fields: [dependencias.idRespuesta],
+    references: [respuestas.id],
+  }),
+}));
+export type Dependencia = typeof dependencias.$inferSelect;
 
 // Tabla de resultados
 export const resultados = pgTable("resultados", {
@@ -186,4 +161,3 @@ export const resultadosRelations = relations(resultados, ({ one }) => ({
   }),
 }));
 export type Resultado = typeof resultados.$inferSelect;
-export type NuevoResultado = typeof resultados.$inferInsert;

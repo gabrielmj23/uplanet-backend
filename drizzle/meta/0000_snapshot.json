@@ -1,5 +1,5 @@
 {
-  "id": "3b15d6f0-7320-46cd-a7a7-cabdb788b1aa",
+  "id": "cf83c55b-d368-43bf-831b-88c820dbebd5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -18,19 +18,19 @@
           "name": "nombre",
           "type": "varchar(256)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "correo": {
           "name": "correo",
           "type": "varchar(256)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "password": {
           "name": "password",
           "type": "varchar(256)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         }
       },
       "indexes": {
@@ -43,6 +43,80 @@
         }
       },
       "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "dependencias": {
+      "name": "dependencias",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "idDependiente": {
+          "name": "idDependiente",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "idDependencia": {
+          "name": "idDependencia",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "idRespuesta": {
+          "name": "idRespuesta",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "dependencias_idDependiente_preguntas_id_fk": {
+          "name": "dependencias_idDependiente_preguntas_id_fk",
+          "tableFrom": "dependencias",
+          "tableTo": "preguntas",
+          "columnsFrom": [
+            "idDependiente"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "dependencias_idDependencia_preguntas_id_fk": {
+          "name": "dependencias_idDependencia_preguntas_id_fk",
+          "tableFrom": "dependencias",
+          "tableTo": "preguntas",
+          "columnsFrom": [
+            "idDependencia"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "dependencias_idRespuesta_respuestas_id_fk": {
+          "name": "dependencias_idRespuesta_respuestas_id_fk",
+          "tableFrom": "dependencias",
+          "tableTo": "respuestas",
+          "columnsFrom": [
+            "idRespuesta"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -60,33 +134,46 @@
           "name": "idAutor",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "titulo": {
           "name": "titulo",
           "type": "varchar(256)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
+        },
+        "resumen": {
+          "name": "resumen",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'Resumen'"
         },
         "contenido": {
           "name": "contenido",
-          "type": "varchar(2048)",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "fecha": {
           "name": "fecha",
           "type": "date",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "now()"
         },
         "ultimaEdicion": {
           "name": "ultimaEdicion",
           "type": "date",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "now()"
+        },
+        "urlImagen": {
+          "name": "urlImagen",
+          "type": "varchar(2048)",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {
@@ -116,61 +203,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "predecesoresPregunta": {
-      "name": "predecesoresPregunta",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "idPregunta": {
-          "name": "idPregunta",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "idRespuesta": {
-          "name": "idRespuesta",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "predecesoresPregunta_idPregunta_preguntas_id_fk": {
-          "name": "predecesoresPregunta_idPregunta_preguntas_id_fk",
-          "tableFrom": "predecesoresPregunta",
-          "tableTo": "preguntas",
-          "columnsFrom": [
-            "idPregunta"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "predecesoresPregunta_idRespuesta_respuestas_id_fk": {
-          "name": "predecesoresPregunta_idRespuesta_respuestas_id_fk",
-          "tableFrom": "predecesoresPregunta",
-          "tableTo": "respuestas",
-          "columnsFrom": [
-            "idRespuesta"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "preguntas": {
       "name": "preguntas",
       "schema": "",
@@ -185,25 +217,25 @@
           "name": "idSeccion",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "tipoPregunta",
+          "primaryKey": false,
+          "notNull": true
         },
         "pregunta": {
           "name": "pregunta",
           "type": "varchar(256)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "orden": {
           "name": "orden",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
-        },
-        "idTipo": {
-          "name": "idTipo",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
+          "notNull": true
         }
       },
       "indexes": {},
@@ -214,19 +246,6 @@
           "tableTo": "secciones",
           "columnsFrom": [
             "idSeccion"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "preguntas_idTipo_tiposPregunta_id_fk": {
-          "name": "preguntas_idTipo_tiposPregunta_id_fk",
-          "tableFrom": "preguntas",
-          "tableTo": "tiposPregunta",
-          "columnsFrom": [
-            "idTipo"
           ],
           "columnsTo": [
             "id"
@@ -252,25 +271,25 @@
           "name": "idPregunta",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "respuesta": {
           "name": "respuesta",
           "type": "varchar(256)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "orden": {
           "name": "orden",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "puntaje": {
           "name": "puntaje",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         }
       },
       "indexes": {},
@@ -306,13 +325,13 @@
           "name": "idRespuesta",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "tipoUsuario": {
           "name": "tipoUsuario",
           "type": "tipoUsuario",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         }
       },
       "indexes": {},
@@ -348,7 +367,13 @@
           "name": "nombre",
           "type": "varchar(256)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
+        },
+        "urlImagen": {
+          "name": "urlImagen",
+          "type": "varchar(2048)",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {
@@ -363,39 +388,16 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
-    },
-    "tiposPregunta": {
-      "name": "tiposPregunta",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "tipo": {
-          "name": "tipo",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {
-        "tipoIndex": {
-          "name": "tipoIndex",
-          "columns": [
-            "tipo"
-          ],
-          "isUnique": true
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
     }
   },
   "enums": {
+    "tipoPregunta": {
+      "name": "tipoPregunta",
+      "values": {
+        "simple": "simple",
+        "multiple": "multiple"
+      }
+    },
     "tipoUsuario": {
       "name": "tipoUsuario",
       "values": {

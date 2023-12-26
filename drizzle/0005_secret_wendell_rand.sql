@@ -1,1 +1,0 @@
-ALTER TABLE "noticias" ALTER COLUMN "resumen" SET DEFAULT 'Resumen';

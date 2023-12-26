@@ -1,1 +1,0 @@
-ALTER TABLE "noticias" ADD COLUMN "urlImagen" varchar(2048) NOT NULL;
