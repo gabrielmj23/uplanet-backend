@@ -1,12 +1,7 @@
 import { Router } from "express";
 import { db } from "../../db/db";
-import {
-  preguntas,
-  respuestas,
-  secciones,
-  tiposPregunta,
-} from "../../db/schema";
-import { eq } from "drizzle-orm";
+import { preguntas, respuestas, secciones } from "../../db/schema";
+import { desc, eq } from "drizzle-orm";
 import { preguntaSchema, respuestaSchema } from "../schemas/pregunta";
 import { authProtected } from "../utils";
 
@@ -24,6 +19,7 @@ preguntasRouter.get("/", async (_req, res) => {
           with: {
             respuestas: true,
           },
+          orderBy: [desc(preguntas.orden)],
         },
       },
     });
@@ -40,29 +36,17 @@ preguntasRouter.get("/", async (_req, res) => {
 preguntasRouter.post("/", authProtected, async (req, res) => {
   try {
     // Validar pregunta
-    const { respuestas, nombreSeccion, tipo, ...preguntaParsed } = preguntaSchema.parse(req.body);
-    // Buscar tipo de pregunta
-    const tipoDB = await db
-      .select({ id: tiposPregunta.id })
-      .from(tiposPregunta)
-      .where(eq(tiposPregunta.tipo, tipo));
-    if (!tipo) {
-      return res.status(400).json({ error: "Tipo de pregunta inválido" });
-    }
-    const tipoId = tipoDB[0].id;
+    const preguntaParsed = preguntaSchema.parse(req.body);
     // Buscar id de sección
     const seccion = await db
       .select({ id: secciones.id })
       .from(secciones)
-      .where(eq(secciones.nombre, nombreSeccion));
+      .where(eq(secciones.id, preguntaParsed.idSeccion));
     if (!seccion) {
       return res.status(400).json({ error: "Sección inválida" });
     }
-    const seccionId = seccion[0].id;
     // Crear pregunta
     await db.insert(preguntas).values({
-      idSeccion: seccionId,
-      idTipo: tipoId,
       ...preguntaParsed,
     });
     // Responder

@@ -108,7 +108,6 @@ export const respuestas = pgTable("respuestas", {
     .references(() => preguntas.id)
     .notNull(),
   respuesta: varchar("respuesta", { length: 256 }).notNull(),
-  orden: integer("orden").notNull(),
   puntaje: integer("puntaje").notNull(),
 });
 export const respuestasRelations = relations(respuestas, ({ one, many }) => ({
