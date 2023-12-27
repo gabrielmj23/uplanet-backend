@@ -6,7 +6,7 @@ import {
   respuestas,
   secciones,
 } from "../../db/schema";
-import { and, desc, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { preguntaSchema, respuestaSchema } from "../schemas/pregunta";
 import { authProtected } from "../utils";
 
@@ -25,7 +25,7 @@ preguntasRouter.get("/", async (_req, res) => {
             respuestas: true,
             dependencias: true,
           },
-          orderBy: [desc(preguntas.orden)],
+          orderBy: [asc(preguntas.orden)],
         },
       },
     });
