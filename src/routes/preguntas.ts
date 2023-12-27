@@ -133,7 +133,10 @@ preguntasRouter.delete(
       await db
         .delete(respuestas)
         .where(
-          and(eq(respuestas.id, respuestaId), eq(preguntas.id, preguntaId))
+          and(
+            eq(respuestas.id, respuestaId),
+            eq(respuestas.idPregunta, preguntaId)
+          )
         );
       res.status(200);
     } catch (error) {
