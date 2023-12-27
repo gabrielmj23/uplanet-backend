@@ -113,7 +113,7 @@ preguntasRouter.delete("/:id", authProtected, async (req, res) => {
     // Responder
     res.status(200);
   } catch (error) {
-    console.error(error)
+    console.error(error);
     res.status(500).json({ error });
   }
 });
@@ -135,6 +135,7 @@ preguntasRouter.delete(
         .where(
           and(eq(respuestas.id, respuestaId), eq(preguntas.id, preguntaId))
         );
+      res.status(200);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error });
