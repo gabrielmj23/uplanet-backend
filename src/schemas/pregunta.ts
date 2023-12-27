@@ -15,5 +15,5 @@ export const preguntaSchema = z.object({
 
 export const respuestaSchema = z.object({
   respuesta: z.string().trim().min(1).max(256),
-  puntaje: z.number().positive(),
+  puntaje: z.number(),
 });
