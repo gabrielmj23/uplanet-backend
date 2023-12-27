@@ -6,7 +6,7 @@ import {
   respuestas,
   secciones,
 } from "../../db/schema";
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { preguntaSchema, respuestaSchema } from "../schemas/pregunta";
 import { authProtected } from "../utils";
 
@@ -100,3 +100,44 @@ preguntasRouter.post("/:id/respuestas", authProtected, async (req, res) => {
     res.status(500).json({ error });
   }
 });
+
+/**
+ * DELETE /api/preguntas/:id
+ * Elimina la pregunta con id :id
+ */
+preguntasRouter.delete("/:id", authProtected, async (req, res) => {
+  try {
+    const preguntaId = parseInt(req.params.id);
+    // Eliminar pregunta
+    await db.delete(preguntas).where(eq(preguntas.id, preguntaId));
+    // Responder
+    res.status(200);
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error });
+  }
+});
+
+/**
+ * DELETE /api/preguntas/:id/respuestas/:idRespuesta
+ * Elimina la respuesta con id :idRespuesta de la pregunta con id :id
+ */
+preguntasRouter.delete(
+  "/:id/respuestas/:idRespuesta",
+  authProtected,
+  async (req, res) => {
+    try {
+      const preguntaId = parseInt(req.params.id);
+      const respuestaId = parseInt(req.params.idRespuesta);
+      // Eliminar respuesta
+      await db
+        .delete(respuestas)
+        .where(
+          and(eq(respuestas.id, respuestaId), eq(preguntas.id, preguntaId))
+        );
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error });
+    }
+  }
+);
