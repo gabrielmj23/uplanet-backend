@@ -101,6 +101,7 @@ export const preguntasRelations = relations(preguntas, ({ one, many }) => ({
     references: [secciones.id],
   }),
   respuestas: many(respuestas),
+  rangos: many(rangos),
   dependencias: many(dependencias),
 }));
 export type Pregunta = typeof preguntas.$inferSelect;

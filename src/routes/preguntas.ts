@@ -28,6 +28,7 @@ preguntasRouter.get("/", async (_req, res) => {
         preguntas: {
           with: {
             respuestas: true,
+            rangos: true,
             dependencias: true,
           },
           orderBy: [asc(preguntas.orden)],
