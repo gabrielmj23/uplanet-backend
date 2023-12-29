@@ -3,11 +3,16 @@ import { db } from "../../db/db";
 import {
   dependencias,
   preguntas,
+  rangos,
   respuestas,
   secciones,
 } from "../../db/schema";
 import { and, asc, eq } from "drizzle-orm";
-import { preguntaSchema, respuestaSchema } from "../schemas/pregunta";
+import {
+  preguntaSchema,
+  rangoSchema,
+  respuestaSchema,
+} from "../schemas/pregunta";
 import { authProtected } from "../utils";
 
 export const preguntasRouter = Router();
@@ -67,7 +72,7 @@ preguntasRouter.post("/", authProtected, async (req, res) => {
       }
     });
     // Responder
-    res.status(200);
+    res.sendStatus(200);
   } catch (error) {
     res.status(500).json({ error });
   }
@@ -95,8 +100,37 @@ preguntasRouter.post("/:id/respuestas", authProtected, async (req, res) => {
       ...respuesta,
     });
     // Responder
-    res.status(200);
+    res.sendStatus(200);
   } catch (error) {
+    res.status(500).json({ error });
+  }
+});
+
+/**
+ * POST /api/preguntas/:id/rangos
+ * Crea un nuevo rango para la pregunta con id :id
+ */
+preguntasRouter.post("/:id/rangos", authProtected, async (req, res) => {
+  try {
+    // Validar id de la pregunta
+    const preguntaId = parseInt(req.params.id);
+    const [pregunta] = await db
+      .select({ id: preguntas.id })
+      .from(preguntas)
+      .where(eq(preguntas.id, preguntaId));
+    if (!pregunta) {
+      return res.status(404).json({ error: "Pregunta no encontrada" });
+    }
+    // Validar rango
+    const rango = rangoSchema.parse(req.body);
+    // Insertar en BD
+    await db.insert(rangos).values({
+      idPregunta: preguntaId,
+      ...rango,
+    });
+    res.sendStatus(200);
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error });
   }
 });
@@ -111,7 +145,7 @@ preguntasRouter.delete("/:id", authProtected, async (req, res) => {
     // Eliminar pregunta
     await db.delete(preguntas).where(eq(preguntas.id, preguntaId));
     // Responder
-    res.status(200);
+    res.sendStatus(200);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error });
@@ -138,7 +172,7 @@ preguntasRouter.delete(
             eq(respuestas.idPregunta, preguntaId)
           )
         );
-      res.status(200);
+      res.sendStatus(200);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error });
