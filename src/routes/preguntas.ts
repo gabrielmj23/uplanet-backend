@@ -58,21 +58,23 @@ preguntasRouter.post("/", authProtected, async (req, res) => {
     if (!seccion) {
       return res.status(400).json({ error: "Sección inválida" });
     }
-    // Crear pregunta con y registrar sus dependencias
+    // Crear pregunta y registrar sus dependencias
+    let idInsertada;
     await db.transaction(async (tx) => {
-      const [{ idInsertada }] = await tx
+      const [{ idPregunta }] = await tx
         .insert(preguntas)
         .values({ ...preguntaParsed })
-        .returning({ idInsertada: preguntas.id });
+        .returning({ idPregunta: preguntas.id });
+      idInsertada = idPregunta;
       for (const dependencia of deps) {
         await tx.insert(dependencias).values({
-          idDependiente: idInsertada,
+          idDependiente: idPregunta,
           ...dependencia,
         });
       }
     });
     // Responder
-    res.sendStatus(200);
+    res.json({ id: idInsertada });
   } catch (error) {
     res.status(500).json({ error });
   }
