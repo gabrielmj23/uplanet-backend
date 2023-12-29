@@ -12,15 +12,19 @@ import {
 
 // Tipos de usuarios que responden la encuesta
 export const tipoUsuarioEnum = pgEnum("tipoUsuario", [
-  "estudiante",
-  "docente",
-  "personal_administrativo",
-  "foraneo",
-  "personal_tecnico",
+  "Estudiante",
+  "Docente",
+  "Personal Administrativo",
+  "Foráneo",
+  "Otro Personal",
 ]);
 
 // Tipos de preguntas
-export const tipoPreguntaEnum = pgEnum("tipoPregunta", ["simple", "multiple"]);
+export const tipoPreguntaEnum = pgEnum("tipoPregunta", [
+  "simple",
+  "multiple",
+  "rango",
+]);
 
 // Tabla de administradores
 export const admins = pgTable(
@@ -121,6 +125,24 @@ export const respuestasRelations = relations(respuestas, ({ one, many }) => ({
 }));
 export type Respuesta = typeof respuestas.$inferSelect;
 
+// Tabla de rangos para respuestas basadas en rango
+export const rangos = pgTable("rangos", {
+  id: serial("id").primaryKey(),
+  idPregunta: integer("idPregunta")
+    .references(() => preguntas.id)
+    .notNull(),
+  minimo: integer("minimo").notNull(),
+  maximo: integer("maximo").notNull(),
+  puntajeUnidad: integer("puntajeUnidad").notNull(),
+});
+export const rangosRelations = relations(rangos, ({ one }) => ({
+  pregunta: one(preguntas, {
+    fields: [rangos.idPregunta],
+    references: [preguntas.id],
+  }),
+}));
+export type Rango = typeof rangos.$inferSelect;
+
 // Tabla de dependencias de preguntas
 export const dependencias = pgTable("dependencias", {
   id: serial("id").primaryKey(),
@@ -161,6 +183,25 @@ export const resultadosRelations = relations(resultados, ({ one }) => ({
   }),
 }));
 export type Resultado = typeof resultados.$inferSelect;
+
+// Tabla de resultados de rangos
+export const resultadosRangos = pgTable("resultadosRangos", {
+  id: serial("id").primaryKey(),
+  idPregunta: integer("idPregunta")
+    .references(() => respuestas.id)
+    .notNull(),
+  tipoUsuario: tipoUsuarioEnum("tipoUsuario").notNull(),
+});
+export const resultadosRangosRelations = relations(
+  resultadosRangos,
+  ({ one }) => ({
+    pregunta: one(preguntas, {
+      fields: [resultadosRangos.idPregunta],
+      references: [preguntas.id],
+    }),
+  })
+);
+export type ResultadoRango = typeof resultadosRangos.$inferSelect;
 
 // Tabla de recomendaciones
 export const recomendaciones = pgTable("recomendaciones", {
