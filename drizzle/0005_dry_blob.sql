@@ -1,0 +1,1 @@
+ALTER TABLE "resultadosRangos" ADD COLUMN "valor" integer NOT NULL;

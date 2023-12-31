@@ -29,6 +29,20 @@
       "when": 1703877465600,
       "tag": "0003_premium_marvel_apes",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1704027730112,
+      "tag": "0004_romantic_bloodstrike",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1704027761631,
+      "tag": "0005_dry_blob",
+      "breakpoints": true
     }
   ]
 }

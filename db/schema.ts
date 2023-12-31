@@ -176,6 +176,7 @@ export const resultados = pgTable("resultados", {
     .references(() => respuestas.id)
     .notNull(),
   tipoUsuario: tipoUsuarioEnum("tipoUsuario").notNull(),
+  fecha: date("fecha").defaultNow().notNull(),
 });
 export const resultadosRelations = relations(resultados, ({ one }) => ({
   respuesta: one(respuestas, {
@@ -192,6 +193,8 @@ export const resultadosRangos = pgTable("resultadosRangos", {
     .references(() => respuestas.id)
     .notNull(),
   tipoUsuario: tipoUsuarioEnum("tipoUsuario").notNull(),
+  valor: integer("valor").notNull(),
+  fecha: date("fecha").defaultNow().notNull(),
 });
 export const resultadosRangosRelations = relations(
   resultadosRangos,

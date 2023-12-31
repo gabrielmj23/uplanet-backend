@@ -23,6 +23,7 @@ import { preguntasRouter } from "./routes/preguntas";
 import { seccionesRouter } from "./routes/secciones";
 import { noticiasRouter } from "./routes/noticias";
 import { recomendacionesRouter } from "./routes/recomendaciones";
+import { encuestasRouter } from "./routes/encuestas";
 
 // Rutas
 app.get("/api", (_req, res) => res.send("Hola mundo"));
@@ -33,6 +34,7 @@ app.use("/api/preguntas", preguntasRouter);
 app.use("/api/secciones", seccionesRouter);
 app.use("/api/noticias", noticiasRouter);
 app.use("/api/recomendaciones", recomendacionesRouter);
+app.use("/api/encuestas", encuestasRouter);
 
 // Iniciar
 const PORT = Number(process.env.PORT) || 3000;
