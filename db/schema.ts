@@ -89,7 +89,9 @@ export type Seccion = typeof secciones.$inferSelect;
 export const preguntas = pgTable("preguntas", {
   id: serial("id").primaryKey(),
   idSeccion: integer("idSeccion")
-    .references(() => secciones.id)
+    .references(() => secciones.id, {
+      onDelete: "cascade",
+    })
     .notNull(),
   tipo: tipoPreguntaEnum("tipo").notNull(),
   pregunta: varchar("pregunta", { length: 256 }).notNull(),
@@ -110,7 +112,9 @@ export type Pregunta = typeof preguntas.$inferSelect;
 export const respuestas = pgTable("respuestas", {
   id: serial("id").primaryKey(),
   idPregunta: integer("idPregunta")
-    .references(() => preguntas.id)
+    .references(() => preguntas.id, {
+      onDelete: "cascade",
+    })
     .notNull(),
   respuesta: varchar("respuesta", { length: 256 }).notNull(),
   puntaje: integer("puntaje").notNull(),
@@ -130,7 +134,9 @@ export type Respuesta = typeof respuestas.$inferSelect;
 export const rangos = pgTable("rangos", {
   id: serial("id").primaryKey(),
   idPregunta: integer("idPregunta")
-    .references(() => preguntas.id)
+    .references(() => preguntas.id, {
+      onDelete: "cascade",
+    })
     .notNull(),
   minimo: integer("minimo").notNull(),
   maximo: integer("maximo").notNull(),
@@ -148,13 +154,19 @@ export type Rango = typeof rangos.$inferSelect;
 export const dependencias = pgTable("dependencias", {
   id: serial("id").primaryKey(),
   idDependiente: integer("idDependiente")
-    .references(() => preguntas.id)
+    .references(() => preguntas.id, {
+      onDelete: "cascade",
+    })
     .notNull(),
   idDependencia: integer("idDependencia")
-    .references(() => preguntas.id)
+    .references(() => preguntas.id, {
+      onDelete: "cascade",
+    })
     .notNull(),
   idRespuesta: integer("idRespuesta")
-    .references(() => respuestas.id)
+    .references(() => respuestas.id, {
+      onDelete: "cascade",
+    })
     .notNull(),
 });
 export const dependenciasRelations = relations(dependencias, ({ one }) => ({
@@ -173,7 +185,9 @@ export type Dependencia = typeof dependencias.$inferSelect;
 export const resultados = pgTable("resultados", {
   id: serial("id").primaryKey(),
   idRespuesta: integer("idRespuesta")
-    .references(() => respuestas.id)
+    .references(() => respuestas.id, {
+      onDelete: "cascade",
+    })
     .notNull(),
   tipoUsuario: tipoUsuarioEnum("tipoUsuario").notNull(),
   fecha: date("fecha").defaultNow().notNull(),
@@ -190,7 +204,9 @@ export type Resultado = typeof resultados.$inferSelect;
 export const resultadosRangos = pgTable("resultadosRangos", {
   id: serial("id").primaryKey(),
   idPregunta: integer("idPregunta")
-    .references(() => respuestas.id)
+    .references(() => respuestas.id, {
+      onDelete: "cascade",
+    })
     .notNull(),
   tipoUsuario: tipoUsuarioEnum("tipoUsuario").notNull(),
   valor: integer("valor").notNull(),
@@ -211,7 +227,9 @@ export type ResultadoRango = typeof resultadosRangos.$inferSelect;
 export const recomendaciones = pgTable("recomendaciones", {
   id: serial("id").primaryKey(),
   idRespuesta: integer("idRespuesta")
-    .references(() => respuestas.id)
+    .references(() => respuestas.id, {
+      onDelete: "cascade",
+    })
     .notNull(),
   recomendacion: varchar("recomendacion", { length: 512 }).notNull(),
   urlImagen: varchar("urlImagen", { length: 2048 }).notNull(),

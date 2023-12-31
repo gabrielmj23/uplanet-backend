@@ -43,6 +43,13 @@
       "when": 1704027761631,
       "tag": "0005_dry_blob",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1704041394481,
+      "tag": "0006_nifty_norrin_radd",
+      "breakpoints": true
     }
   ]
 }
