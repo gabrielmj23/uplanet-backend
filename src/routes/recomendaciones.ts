@@ -30,7 +30,11 @@ recomendacionesRouter.get("/", async (req, res) => {
       // Caso de todas las recomendaciones
       const rows = await db.query.recomendaciones.findMany({
         with: {
-          respuesta: true,
+          respuesta: {
+            with: {
+              pregunta: true,
+            },
+          },
         },
       });
       return res.json({ recomendaciones: rows });
