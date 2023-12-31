@@ -28,7 +28,11 @@ recomendacionesRouter.get("/", async (req, res) => {
   try {
     if (!req.query.idSeccion) {
       // Caso de todas las recomendaciones
-      const rows = await db.select().from(recomendaciones);
+      const rows = await db.query.recomendaciones.findMany({
+        with: {
+          respuesta: true,
+        },
+      });
       return res.json({ recomendaciones: rows });
     }
     // Caso de recomendaciones por sección
