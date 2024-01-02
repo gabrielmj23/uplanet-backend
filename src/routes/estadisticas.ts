@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { db } from "../../db/db";
 import { TipoUsuario, huellas } from "../../db/schema";
-import { avg, sql } from "drizzle-orm";
 
 export const statsRouter = Router();
 
