@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import {
   date,
+  doublePrecision,
   integer,
   pgEnum,
   pgTable,
@@ -18,6 +19,7 @@ export const tipoUsuarioEnum = pgEnum("tipoUsuario", [
   "Foráneo",
   "Otro Personal",
 ]);
+export type TipoUsuario = (typeof tipoUsuarioEnum.enumValues)[number];
 
 // Tipos de preguntas
 export const tipoPreguntaEnum = pgEnum("tipoPregunta", [
@@ -105,6 +107,7 @@ export const preguntasRelations = relations(preguntas, ({ one, many }) => ({
   respuestas: many(respuestas),
   rangos: many(rangos),
   dependencias: many(dependencias),
+  resultadosRangos: many(resultadosRangos),
 }));
 export type Pregunta = typeof preguntas.$inferSelect;
 
@@ -222,6 +225,12 @@ export const resultadosRangosRelations = relations(
   })
 );
 export type ResultadoRango = typeof resultadosRangos.$inferSelect;
+
+export const huellas = pgTable("huellas", {
+  id: serial("id").primaryKey(),
+  huella: doublePrecision("huella").notNull(),
+  tipoUsuario: tipoUsuarioEnum("tipoUsuario").notNull(),
+});
 
 // Tabla de recomendaciones
 export const recomendaciones = pgTable("recomendaciones", {

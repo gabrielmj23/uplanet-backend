@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { encuestaSchema } from "../schemas/encuesta";
 import { db } from "../../db/db";
-import { resultados, resultadosRangos } from "../../db/schema";
+import { huellas, resultados, resultadosRangos } from "../../db/schema";
 
 export const encuestasRouter = Router();
 
@@ -12,7 +12,8 @@ export const encuestasRouter = Router();
 encuestasRouter.post("/", async (req, res) => {
   try {
     // Validar encuesta
-    const encuestaParsed = encuestaSchema.parse(req.body);
+    const encuestaParsed = encuestaSchema.parse(req.body.encuesta);
+    const huella = Number(req.body.huella);
     // Obtener respuestas
     const respuestas = encuestaParsed.secciones.flatMap((seccion) =>
       seccion.preguntas
@@ -39,6 +40,9 @@ encuestasRouter.post("/", async (req, res) => {
     await db.transaction(async (tx) => {
       await tx.insert(resultados).values(respuestas);
       await tx.insert(resultadosRangos).values(rangos);
+      await tx
+        .insert(huellas)
+        .values({ huella, tipoUsuario: encuestaParsed.tipoUsuario });
     });
     res.sendStatus(200);
   } catch (error) {

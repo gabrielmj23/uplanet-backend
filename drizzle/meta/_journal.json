@@ -50,6 +50,13 @@
       "when": 1704041394481,
       "tag": "0006_nifty_norrin_radd",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1704158162906,
+      "tag": "0007_greedy_veda",
+      "breakpoints": true
     }
   ]
 }
