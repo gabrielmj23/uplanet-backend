@@ -27,6 +27,7 @@ export const tipoPreguntaEnum = pgEnum("tipoPregunta", [
   "multiple",
   "rango",
 ]);
+export type TipoPregunta = (typeof tipoPreguntaEnum.enumValues)[number];
 
 // Tabla de administradores
 export const admins = pgTable(

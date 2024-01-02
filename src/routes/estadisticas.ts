@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "../../db/db";
-import { TipoUsuario, huellas } from "../../db/schema";
+import { TipoPregunta, TipoUsuario, huellas } from "../../db/schema";
 
 export const statsRouter = Router();
 
@@ -112,6 +112,128 @@ statsRouter.get("/promedios", async (_req, res) => {
   }
 });
 
+function convertirPreguntasDeRespuesta(
+  preguntas: {
+    id: number;
+    pregunta: string;
+    tipo: TipoPregunta;
+    respuestas: {
+      id: number;
+      respuesta: string;
+      resultados: {
+        tipoUsuario: TipoUsuario;
+      }[];
+    }[];
+    rangos: {
+      puntajeUnidad: number;
+    }[];
+    resultadosRangos: {
+      tipoUsuario: TipoUsuario;
+      valor: number;
+    }[];
+  }[]
+) {
+  return preguntas
+    .filter((p) => p.tipo !== "rango")
+    .map((p) => ({
+      id: p.id,
+      pregunta: p.pregunta,
+      tipo: p.tipo,
+      respuestas: p.respuestas.reduce(
+        (
+          acc: Record<TipoUsuario, { respuesta: string; cantidad: number }[]>,
+          resp
+        ) => {
+          const results = resp.resultados.reduce(
+            (acc2: Record<TipoUsuario, number>, rest) => {
+              const tipo = rest.tipoUsuario;
+              if (!acc2[tipo]) {
+                acc2[tipo] = 0;
+              }
+              acc2[tipo] += 1;
+              return acc2;
+            },
+            Object.create(null)
+          );
+          const resultadosConv = Object.keys(results).map((tipo) => ({
+            tipoUsuario: tipo as TipoUsuario,
+            cantidad: results[tipo as TipoUsuario],
+            respuesta: resp.respuesta,
+          }));
+          for (const resConv of resultadosConv) {
+            const tipo = resConv.tipoUsuario;
+            if (!acc[tipo]) {
+              acc[tipo] = [];
+            }
+            acc[tipo].push({
+              cantidad: resConv.cantidad,
+              respuesta: resConv.respuesta,
+            });
+          }
+          return acc;
+        },
+        Object.create(null)
+      ),
+    }));
+}
+
+function convertirPreguntasDeRango(
+  preguntas: {
+    id: number;
+    pregunta: string;
+    tipo: TipoPregunta;
+    respuestas: {
+      id: number;
+      respuesta: string;
+      resultados: {
+        tipoUsuario: TipoUsuario;
+      }[];
+    }[];
+    rangos: {
+      puntajeUnidad: number;
+    }[];
+    resultadosRangos: {
+      tipoUsuario: TipoUsuario;
+      valor: number;
+    }[];
+  }[]
+) {
+  return preguntas
+    .filter((p) => p.tipo === "rango")
+    .map((p) => ({
+      id: p.id,
+      pregunta: p.pregunta,
+      tipo: p.tipo,
+      rangos: p.resultadosRangos.reduce(
+        (
+          acc: Record<TipoUsuario, { valor: number; cantidad: number }[]>,
+          resRgo
+        ) => {
+          const tipo = resRgo.tipoUsuario;
+          if (!acc[tipo]) {
+            acc[tipo] = [];
+          }
+          let encontrado = false;
+          for (const rango of acc[tipo]) {
+            if (rango.valor === resRgo.valor) {
+              rango.cantidad += 1;
+              encontrado = true;
+              break;
+            }
+          }
+          if (!encontrado) {
+            acc[tipo].push({
+              valor: resRgo.valor,
+              cantidad: 1,
+            });
+          }
+          return acc;
+        },
+        Object.create(null)
+      ),
+    }));
+}
+
 /**
  * GET /api/estadisticas/secciones
  * Devuelve las estadísticas de cada sección
@@ -119,6 +241,10 @@ statsRouter.get("/promedios", async (_req, res) => {
 statsRouter.get("/secciones", async (_req, res) => {
   try {
     const secciones = await db.query.secciones.findMany({
+      columns: {
+        id: true,
+        nombre: true,
+      },
       with: {
         preguntas: {
           columns: {
@@ -129,6 +255,7 @@ statsRouter.get("/secciones", async (_req, res) => {
           with: {
             respuestas: {
               columns: {
+                id: true,
                 respuesta: true,
               },
               with: {
@@ -154,7 +281,15 @@ statsRouter.get("/secciones", async (_req, res) => {
         },
       },
     });
-    res.json({ secciones });
+    res.json({
+      secciones: secciones.map((seccion) => ({
+        ...seccion,
+        preguntas: [
+          ...convertirPreguntasDeRespuesta(seccion.preguntas),
+          ...convertirPreguntasDeRango(seccion.preguntas),
+        ],
+      })),
+    });
   } catch (error) {
     res.status(500).json({ error });
   }
