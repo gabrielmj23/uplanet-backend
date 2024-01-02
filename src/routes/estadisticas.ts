@@ -58,7 +58,7 @@ statsRouter.get("/huellaTotal", async (_req, res) => {
     const huellaPorTipo = Object.keys(resultadosPorTipo).reduce(
       (acc: Record<TipoUsuario, number>, tipo) => {
         const tu = tipo as TipoUsuario;
-        acc[tu] = resultadosPorTipo[tu] + rangosPorTipo[tu];
+        acc[tu] = (resultadosPorTipo[tu] + rangosPorTipo[tu]) / 10000;
         return acc;
       },
       Object.create(null)
@@ -76,21 +76,38 @@ statsRouter.get("/huellaTotal", async (_req, res) => {
 statsRouter.get("/promedios", async (_req, res) => {
   try {
     // Obtener huellas de BD
-    const huellasBd = await db
-      .select({
-        promedioHuella: avg(huellas.huella),
-        tipoUsuario: huellas.tipoUsuario,
-        cantidad: sql<number>`cast(count(${huellas.id}) as int)`,
-      })
-      .from(huellas)
-      .groupBy(huellas.tipoUsuario);
-    // Devolver
-    res.json({
-      huellasPromedio: huellasBd.map((h) => ({
-        ...h,
-        promedioHuella: Number(h.promedioHuella),
-      })),
-    });
+    const huellasBd = await db.select().from(huellas);
+    const huellasPorTipo = huellasBd.reduce(
+      (acc: Record<TipoUsuario, { cuenta: number; suma: number }>, huella) => {
+        const tipo = huella.tipoUsuario;
+        if (!acc[tipo]) {
+          acc[tipo] = { cuenta: 0, suma: 0 };
+        }
+        acc[tipo] = {
+          cuenta: acc[tipo].cuenta + 1,
+          suma: acc[tipo].suma + huella.huella,
+        };
+        return acc;
+      },
+      Object.create(null)
+    );
+    const promediosPorTipo = Object.keys(huellasPorTipo).reduce(
+      (
+        acc: Record<TipoUsuario, { promedio: number; cuenta: number }>,
+        tipo
+      ) => {
+        const tipoUsuario = tipo as TipoUsuario;
+        acc[tipoUsuario] = {
+          promedio:
+            huellasPorTipo[tipoUsuario].suma /
+            huellasPorTipo[tipoUsuario].cuenta,
+          cuenta: huellasPorTipo[tipoUsuario].cuenta,
+        };
+        return acc;
+      },
+      Object.create(null)
+    );
+    res.json({ promediosPorTipo });
   } catch (error) {
     res.status(500).json({ error });
   }
