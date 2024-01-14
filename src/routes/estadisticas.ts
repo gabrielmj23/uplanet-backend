@@ -57,7 +57,7 @@ statsRouter.get("/huellaTotal", async (_req, res) => {
     const huellaPorTipo = Object.keys(resultadosPorTipo).reduce(
       (acc: Record<TipoUsuario, number>, tipo) => {
         const tu = tipo as TipoUsuario;
-        acc[tu] = (resultadosPorTipo[tu] + rangosPorTipo[tu]) / 10000;
+        acc[tu] = (resultadosPorTipo[tu] + rangosPorTipo[tu]) / 100000;
         return acc;
       },
       Object.create(null)
