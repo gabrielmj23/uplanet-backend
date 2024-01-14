@@ -208,7 +208,7 @@ export type Resultado = typeof resultados.$inferSelect;
 export const resultadosRangos = pgTable("resultadosRangos", {
   id: serial("id").primaryKey(),
   idPregunta: integer("idPregunta")
-    .references(() => respuestas.id, {
+    .references(() => preguntas.id, {
       onDelete: "cascade",
     })
     .notNull(),

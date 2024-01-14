@@ -17,7 +17,7 @@ encuestasRouter.post("/", async (req, res) => {
     // Obtener respuestas
     const respuestas = encuestaParsed.secciones.flatMap((seccion) =>
       seccion.preguntas
-        .filter((pregunta) => pregunta.tipo !== "rango")
+        .filter((pregunta) => pregunta.tipo !== "rango" && !pregunta.rango)
         .flatMap(
           (pregunta) =>
             pregunta.respuestas?.map((respuesta) => ({
@@ -29,7 +29,7 @@ encuestasRouter.post("/", async (req, res) => {
     // Obtener rangos
     const rangos = encuestaParsed.secciones.flatMap((seccion) =>
       seccion.preguntas
-        .filter((pregunta) => pregunta.tipo === "rango")
+        .filter((pregunta) => pregunta.tipo === "rango" && !pregunta.respuestas)
         .flatMap((pregunta) => ({
           idPregunta: pregunta.id,
           valor: pregunta.rango?.valor ?? 0,
